@@ -52,8 +52,11 @@ def song_freq_change(sid, data):
 
 @sio.on('echo')
 def message(sid, data):
-    rand = random.randint(100, 300)
+    print('echo')
+    rand = random.randint(100, 1000)
+    print(rand)
     payload = prepare_payload(rand, rand)
+    print(payload)
 
     sio.emit('freq', payload)
 
