@@ -37,7 +37,7 @@ def prepare_payload(freq1, freq2):
 @sio.on('freq_change')
 def freq_change(sid, data):
     freq1 = data['freq']
-    freq2 = data['freq'] * 3/2
+    freq2 = data['freq']
 
     output = prepare_payload(freq1, freq2)
     sio.emit('freq', output)
