@@ -19,8 +19,8 @@ def midi_to_hertz(midi):
     return f
 
 
-def send_to_socket(freq, vol):
-    data = json.dumps({'freq': freq, 'vol': vol})
+def send_to_socket(freq_array, vol):
+    data = json.dumps({'freq': freq_array, 'vol': vol})
     socket.emit('freq_change', data)
 
 

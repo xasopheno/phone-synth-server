@@ -2,6 +2,7 @@ import socketio
 import eventlet
 from flask import Flask
 import random
+import json
 
 sio = socketio.Server(logger=True)
 app = Flask(__name__)
@@ -40,7 +41,7 @@ def disconnect(sid):
 
 def prepare_payload(array_freqs):
     payload = {
-        'freqs': [array_freqs],
+        'freqs': array_freqs,
         'vol': 100
     }
     return payload
@@ -48,8 +49,6 @@ def prepare_payload(array_freqs):
 
 @sio.on('freq_change')
 def freq_change(sid, data):
-    # freq = data['freq']
-    # output = prepare_payload([freq])
     sio.emit('freq', data)
 
 
