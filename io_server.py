@@ -48,9 +48,9 @@ def prepare_payload(array_freqs):
 
 @sio.on('freq_change')
 def freq_change(sid, data):
-    freq = data['freq']
-    output = prepare_payload([freq])
-    sio.emit('freq', output)
+    # freq = data['freq']
+    # output = prepare_payload([freq])
+    sio.emit('freq', data)
 
 
 @sio.on('echo')
