@@ -3,8 +3,10 @@ import eventlet
 from flask import Flask
 import random
 
-sio = socketio.Server(logger=True, async_mode=None)
+sio = socketio.Server(logger=True)
 app = Flask(__name__)
+
+clients = []
 
 
 class Counter:
@@ -14,21 +16,31 @@ class Counter:
     def inc(self):
         self.count += 1
 
+
 counter = Counter()
 
 
 @sio.on('connect')
 def connect(sid, environ):
     print('client_connect', sid)
-    sio.emit('connected_to_server', {'message': 'Connected', 'count': counter.count})
+    clients.append(sid)
+    sio.emit(
+        'connected_to_server',
+        {'message': 'Connected', 'count': counter.count},
+        room=sid
+    )
+
     counter.count += 1
-    print(counter.count)
 
 
-def prepare_payload(freq1, freq2):
+@sio.on('disconnect')
+def disconnect(sid):
+    clients.remove(sid)
+
+
+def prepare_payload(array_freqs):
     payload = {
-        'freq1': freq1,
-        'freq2': freq2,
+        'freqs': [array_freqs],
         'vol': 100
     }
     return payload
@@ -36,38 +48,22 @@ def prepare_payload(freq1, freq2):
 
 @sio.on('freq_change')
 def freq_change(sid, data):
-    freq1 = data['freq']
-    freq2 = data['freq']
-
-    output = prepare_payload(freq1, freq2)
+    freq = data['freq']
+    output = prepare_payload([freq])
     sio.emit('freq', output)
 
-@sio.on('song_change')
-def song_freq_change(sid, data):
-    freq1 = data['freq1']
-    freq2 = data['freq2']
-
-    payload = prepare_payload(freq1, freq2)
-    sio.emit('freq', payload)
 
 @sio.on('echo')
 def message(sid, data):
     print('echo')
     rand = random.randint(100, 1000)
-    print(rand)
-    payload = prepare_payload(rand, rand)
+    payload = prepare_payload([rand, rand + 100, rand + 200, rand + 300])
     print(payload)
 
     sio.emit('freq', payload)
 
 
-@sio.on('disconnect')
-def disconnect(sid):
-    print('disconnect ', sid)
-
-
 app = socketio.Middleware(sio, app)
 
 if __name__ == '__main__':
-
     eventlet.wsgi.server(eventlet.listen(('localhost', 9876)), app)
