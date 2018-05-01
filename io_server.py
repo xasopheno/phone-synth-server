@@ -2,7 +2,6 @@ import socketio
 import eventlet
 from flask import Flask
 import random
-import json
 
 sio = socketio.Server(logger=True)
 app = Flask(__name__)

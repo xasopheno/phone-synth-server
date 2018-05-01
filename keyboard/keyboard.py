@@ -5,9 +5,8 @@ import json
 
 ports = mido.get_input_names()
 print(ports)
+socket = SocketIO('phone-synth-server.herokuapp.com', 80, LoggingNamespace)
 # socket = SocketIO('localhost', 9876, LoggingNamespace)
-socket = SocketIO('localhost', 9876, LoggingNamespace)
-# localhost:9876' : 'phone-synth-server.herokuapp.com
 
 midi_array = []
 
