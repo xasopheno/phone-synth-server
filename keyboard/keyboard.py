@@ -40,7 +40,6 @@ def note_on(event):
     note = note_regex.search(str(event))[0]
     midi = midi_num_regex.search((str(note)))[0]
     midi_array.append(int(midi))
-    # print(midi_array)
 
 
 def note_off(event):
@@ -49,7 +48,6 @@ def note_off(event):
     note = note_regex.search(str(event))[0]
     midi = midi_num_regex.search((str(note)))[0]
     midi_array.remove(int(midi))
-    # print(midi_array, midi)
 
 
 with mido.open_input('microKEY-25 KEYBOARD') as inport:
